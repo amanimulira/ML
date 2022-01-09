@@ -1,0 +1,52 @@
+an introduction to autograd in pytorch - >
+
+training an neural network happens in two steps ->
+
+    forward propagation : in forward propagation makes its best guess about the correct output.
+    this is done by running the inputs through each of its functions.
+
+    during forward propagation autograd also runs the requested operation (probs comes from the optimization functions)
+    to compute a resulting tensor, and also maintain the operation's gradient function in the directed acyclic graph.
+
+
+    backward propagation : in backward propagation the parameters ( weights and biases ) are adjusted
+    proportionate to the error in its guess. -> this is done by starting at the output and working backwards
+    by collecting the derivatives of the error with respect to the parameters of the function ( gradients ). ->
+    then optimizing the parameters using gradient descent.
+
+    when the function .backward() is called backwards propagation begins on the root of the DAG.
+
+    autograd does 3 things :
+
+        1) computes the gradient from each .grand_fn ( references a function that has created a function )
+        2) accumulated them in the respective tensor's .grad attribute
+        3) using the chain rule, propagated all the way to the leaf tensor
+
+
+differentiation in autograd - >
+
+autograd keeps a record of all of the data (tensors) and a record of all the
+operations preformed on the data ( and the resulting new tensors ) in a directed acyclic graph !!!
+
+the gradients can automatically be calculated by tracing the graph from roots (outputs) to leaves (inputs), this is done
+using the chain rule.
+
+Directed Acyclic Graph:
+https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.creative-proteomics.com%2Fservices%2Fdirected-acyclic-graph-dag-service.htm&psig=AOvVaw0u43iucIMLYnzICxRM_N-F&ust=1628795840812000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCNDZ2sDXqfICFQAAAAAdAAAAABAD
+
+
+Further Notes:
+
+AUTOGRAD
+
+Autograd is now a core torch package for automatic differentiation. It uses a tape based system for automatic differentiation.
+
+In the forward phase, the autograd tape will remember all the operations it executed, and in the backward phase, it will replay the operations.
+
+Tensors that track history
+
+In autograd, if any input Tensor of an operation has requires_grad=True, the computation will be tracked. After computing the backward pass, a gradient w.r.t. this tensor is accumulated into .grad attribute.
+
+There’s one more class which is very important for autograd implementation - a Function. Tensor and Function are interconnected and build up an acyclic graph, that encodes a complete history of computation. Each variable has a .grad_fn attribute that references a function that has created a function (except for Tensors created by the user - these have None as .grad_fn).
+
+If you want to compute the derivatives, you can call .backward() on a Tensor. If Tensor is a scalar (i.e. it holds a one element tensor), you don’t need to specify any arguments to backward(), however if it has more elements, you need to specify a grad_output argument that is a tensor of matching shape.
