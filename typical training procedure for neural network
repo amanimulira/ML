@@ -1,0 +1,13 @@
+training procedure :
+
+define the neural network that has some learnable parameters ( or weights )
+
+iterate over a dataset of inputs
+
+process input through the network
+
+compute the loss ( how far is the output from being correct )
+
+propagate gradients back into the network's parameters
+
+update the weights of the network, typically using a simple update rule: new_weights = weights - learning_rate * gradient
