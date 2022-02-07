@@ -138,7 +138,7 @@ class ResNetEncoder(nn.Module):
     ResNet encoder composed by increasing different layers with increasing features.
     """
 
-    def __init__(self, in_channels=3, blocks_sizes=[64, 128, 256, 512], deepths=[2, 2, 2, 2],
+    def __init__(self, in_channels=3, blocks_sizes=[64, 128, 256, 512], depths=[2, 2, 2, 2],
                  activation=nn.ReLU, block=ResNetBasicBlock, *args, **kwargs):
         super().__init__()
 
@@ -153,12 +153,12 @@ class ResNetEncoder(nn.Module):
 
         self.in_out_block_sizes = list(zip(blocks_sizes, blocks_sizes[1:]))
         self.blocks = nn.ModuleList([
-            ResNetLayer(blocks_sizes[0], blocks_sizes[0], n=deepths[0], activation=activation,
+            ResNetLayer(blocks_sizes[0], blocks_sizes[0], n=depths[0], activation=activation,
                         block=block, *args, **kwargs),
             *[ResNetLayer(in_channels * block.expansion,
                           out_channels, n=n, activation=activation,
                           block=block, *args, **kwargs)
-              for (in_channels, out_channels), n in zip(self.in_out_block_sizes, deepths[1:])]
+              for (in_channels, out_channels), n in zip(self.in_out_block_sizes, depths[1:])]
         ])
 
     def forward(self, x):
@@ -171,7 +171,7 @@ class ResNetEncoder(nn.Module):
 # finally the decoder is used to map the features learned by the network to their respective classes.
 class ResnetDecoder(nn.Module):
     """
-    This class represents the tail of REsNet. It performs a global pooling and maps the output to the
+    This class represents the tail of ResNet. It performs a global pooling and maps the output to the
     correct class by using a fully connected layer.
     """
 
@@ -220,6 +220,6 @@ def resnet152(in_channels, n_classes):
     return ResNet(in_channels, n_classes, block=ResNetBottleNeckBlock, depths=[3, 8, 36, 3])
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # PyTorch v0.4.0
-model = resnet18(3, 1000).to(device)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = resnet152(3, 1000).to(device)
 summary(model, (3, 244, 244))
