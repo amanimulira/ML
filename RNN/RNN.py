@@ -17,7 +17,6 @@ class RNN(nn.Module):
 
     def forward(self, input_tensor, hidden_tensor):
         combined = torch.cat((input_tensor, hidden_tensor), 1)
-
         hidden = self.i2h(combined)
         output = self.i2o(combined)
         output = self.softmax(output)
